@@ -9,6 +9,8 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import Checkbox from '@material-ui/core/Checkbox'
+import Slider from '@material-ui/lab/Slider'
+
 
 const defineGenderGroup = gender => {
   switch (gender.toLowerCase()) {
@@ -61,12 +63,14 @@ export default class OverviewChart extends React.Component {
       gender: true,
       treatment: true,
       familyHistory: true,
-    }
+    },
+    minEntries: 42,
   }
 
   fetchData() {
     // this is from backend of course
     const { data, dataModel } = this.props
+    const { minEntries } = this.state
 
     const newData = {}
     data.forEach(e => {
@@ -86,7 +90,7 @@ export default class OverviewChart extends React.Component {
     const dataToReturn = []
     for (const key in newData) {
       let dataBycountry = newData[key]
-      if (dataBycountry.entries > 30)
+      if (dataBycountry.entries > minEntries)
         dataToReturn.push({ ...dataBycountry })
     }
 
@@ -99,13 +103,20 @@ export default class OverviewChart extends React.Component {
     this.setState({ filters })
   }
 
-  componentDidMount() {
+  updateMinEnties(minEntries) {
+    this.setState({ minEntries }, () => this.updateDataSourceMapping())
+  }
+
+  updateDataSourceMapping() {
     this.setState({ dataChart: this.fetchData() })
   }
 
+  componentDidMount() {
+    this.updateDataSourceMapping()
+  }
+
   render() {
-    const { dataChart, filters, } = this.state
-    console.log(filters)
+    const { dataChart, filters, minEntries, } = this.state
 
     const listFilters = [
       {
@@ -133,7 +144,9 @@ export default class OverviewChart extends React.Component {
     return (
       <Grid container spacing={3}>
         <Grid item xs={3}>
-          <h4>Filters</h4>
+          <div style={{ marginLeft: 30 }}>
+            <h4>Filters</h4>
+          </div>
           <List>
             { listFilters.map(value => {
               const { key, label, } = value
@@ -154,6 +167,18 @@ export default class OverviewChart extends React.Component {
               )
             })}
           </List>
+          <Slider
+            className={'slider'}
+            value={minEntries}
+            min={0}
+            max={45}
+            step={3}
+            onChange={(event, value) => this.updateMinEnties(value)}
+            style={{ marginLeft: 30 }}
+          />
+          <div style={{ textAlign: 'center' }}>
+            Minimum entries: {minEntries}
+          </div>
         </Grid>
         <Grid item xs={9}>
           <div style={{ height: 400 }}>
