@@ -9,17 +9,32 @@ import Typography from '@material-ui/core/Typography'
 import Home from './Home'
 import Details from './Details'
 
+import { data, dataModel } from './static/data'
+
 export default class defaultRoute extends React.Component {
   state = {
-    limit: 'All'
+    limit: 'All',
+    loading: true,
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({ loading: false })
+    }, 1000)
+  }
+
+  sliceData(limit) {
+    return limit === 'All'
+      ? data
+      : data.slice(Math.max(0, limit))
   }
 
   render() {
-    const { limit } = this.state
+    const { limit, loading, } = this.state
 
-    const limitPossibles = [
-      '100', '500', 'All',
-    ]
+    const limitPossibles = [ 100, 500, 'All', ]
+
+    const selectedData = this.sliceData(limit)
 
     return (
       <Router>
@@ -42,8 +57,8 @@ export default class defaultRoute extends React.Component {
             </Typography>
           </Toolbar>
         </AppBar>
-        <Route exact path="/" component={() => <Home limit={limit} />} />
-        <Route path="/details" component={() => <Details limit={limit} />} />
+        <Route exact path="/" component={() => <Home limit={limit} data={selectedData} dataModel={dataModel} loading={loading} />} />
+        <Route path="/details" component={() => <Details limit={limit} data={selectedData} dataModel={dataModel} loading={loading} />} />
       </Router>
     )
   }
