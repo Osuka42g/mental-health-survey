@@ -4,12 +4,8 @@ import {
   ResponsiveContainer, ComposedChart, Line, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts'
 
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
-import Checkbox from '@material-ui/core/Checkbox'
-import Slider from '@material-ui/lab/Slider'
+import FilterList from './FilterList'
+import FilterSlider from './FilterSlider'
 
 
 const defineGenderGroup = gender => {
@@ -118,7 +114,7 @@ export default class OverviewChart extends React.Component {
   render() {
     const { dataChart, filters, minEntries, } = this.state
 
-    const listFilters = [
+    const filterOptions = [
       {
         key: 'entries',
         label: 'Entries count',
@@ -147,38 +143,15 @@ export default class OverviewChart extends React.Component {
           <div style={{ marginLeft: 30 }}>
             <h4>Filters</h4>
           </div>
-          <List>
-            { listFilters.map(value => {
-              const { key, label, } = value
-              const checked = this.state.filters[key]
-              const labelId = `checkbox-list-label-${key}`
-
-              return (
-                <ListItem key={`list-${key}`} role={undefined} dense button onClick={() => this.handleToggle(key)}>
-                  <ListItemIcon>
-                    <Checkbox
-                      checked={checked}
-                      tabIndex={-1}
-                      inputProps={{ 'aria-labelledby': labelId }}
-                    />
-                  </ListItemIcon>
-                  <ListItemText id={labelId} primary={label} />
-                </ListItem>
-              )
-            })}
-          </List>
-          <Slider
-            className={'slider'}
-            value={minEntries}
-            min={0}
-            max={45}
-            step={3}
-            onChange={(event, value) => this.updateMinEnties(value)}
-            style={{ marginLeft: 30 }}
+          <FilterList
+            options={filterOptions}
+            statuses={this.state.filters}
+            handleToggle={(key) => this.handleToggle(key)}
           />
-          <div style={{ textAlign: 'center' }}>
-            Minimum entries: {minEntries}
-          </div>
+          <FilterSlider
+            value={minEntries}
+            onUpdate={value => this.updateMinEnties(value)}
+          />
         </Grid>
         <Grid item xs={9}>
           <div style={{ height: 400 }}>
