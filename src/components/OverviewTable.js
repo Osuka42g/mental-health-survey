@@ -1,7 +1,9 @@
 import React from 'react'
-import {
-  ResponsiveContainer, ComposedChart, Line, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-} from 'recharts'
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 
 import { data, dataModel } from './../static/data'
 
@@ -86,43 +88,36 @@ export default class OverviewTable extends React.Component {
 
     const { showAge, showGender, } = this.state
 
+    const { data } = this.props
+    const rows = data
+
     return (
-      <div style={{ width: '100%', height: 300 }}>
-        <ResponsiveContainer>
-          <ComposedChart
-            width={500}
-            height={400}
-            data={dataChart}
-            margin={{
-              top: 10, right: 10, bottom: 10, left: 10,
-            }}
-          >
-            <CartesianGrid stroke="#f5f5f5" />
-            <XAxis dataKey="country" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Area type="monotone" name="Entries count" dataKey="entries" fill="#8884d8" stroke="#8884d8" />
-            {
-              showAge && <>
-                <Bar barSize={100} stackId="age" name="Up to 20 years" dataKey="ageUp20" fill="#669900" />
-                <Bar barSize={100} stackId="age" name="Up to 40 years" dataKey="ageUp40" fill="#009933" />
-                <Bar barSize={100} stackId="age" name="Up to 60 years" dataKey="ageUp60" fill="#006600" />
-                <Bar barSize={100} stackId="age" name="More than 60 years" dataKey="ageMore60" fill="#0000cc" />
-              </>
-            }
-            <Bar barSize={75} name="Family Mental Illness" dataKey="familyMentalIllness" fill="#669999" />
-            <Bar barSize={75} name="In treatment" dataKey="treatment" fill="#ff9900" />
-            {
-              showGender && <>
-                <Line type="monotone" name="Males" dataKey="genderMale" stroke="#3366ff" />
-                <Line type="monotone" name="Females" dataKey="genderFemale" stroke="#ff6699" />
-                <Line type="monotone" name="Other gender" dataKey="genderUnknow" stroke="#9999ff" />
-              </>
-            }
-          </ComposedChart>
-        </ResponsiveContainer>
-      </div>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Country</TableCell>
+            <TableCell align="right">Gender</TableCell>
+            <TableCell align="right">Age</TableCell>
+            <TableCell align="right">Family History</TableCell>
+            <TableCell align="right">Treatment</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {
+            rows.map(row => (
+              <TableRow key={Math.random()}>
+                <TableCell component="th" scope="row">
+                  {row.country}
+                </TableCell>
+                <TableCell align="right">{row.gender}</TableCell>
+                <TableCell align="right">{row.age}</TableCell>
+                <TableCell align="right">{row.family_history}</TableCell>
+                <TableCell align="right">{row.treatment}</TableCell>
+              </TableRow>
+            ))
+          }
+        </TableBody>
+      </Table>
     )
   }
 }
