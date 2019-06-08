@@ -90,24 +90,32 @@ export default class Details extends React.Component {
     return countriesFiltered
   }
 
-  renderBarChart = (datasource, elements) => {
+  renderBarChart = (title, datasource, elements) => {
     return (
-      <BarChart
-        width={500}
-        height={300}
-        data={datasource}
-        margin={{
-          top: 5, right: 30, left: 20, bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="country" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        { elements }
-      </BarChart>)
-    }
+      <div style={{ height: 400 }}>
+        <div style={{ marginLeft: 30 }}>
+          <h5>{title}</h5>
+        </div>
+        <ResponsiveContainer>
+          <BarChart
+            width={500}
+            height={300}
+            data={datasource}
+            margin={{
+              top: 5, right: 30, left: 20, bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="country" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            {elements}
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    )
+  }
 
   render() {
     const { loading, } = this.props
@@ -120,10 +128,34 @@ export default class Details extends React.Component {
     const healthVSPhysicalResults = healthVSPhysicalComparison(filteredData)
     const leaveResults = leaveComparison(filteredData)
 
+    const wellnessElements = [
+      <Bar dataKey="wellness_program" key="wellness_program" name="Companies with wellness program" fill="#8884d8" />,
+      <Bar dataKey="mental_health_consequence" key="mental_health_consequence" name="Companies with mental health consequence" fill="#f46b42" />,
+    ]
+
+    const interfereElements = [
+      <Bar dataKey="care_options" key="care_options" name="Have care options" fill="#bfa35d" />,
+      <Bar dataKey="tech_company" key="tech_company" name="Tech Companies" fill="#5d81bf" />,
+    ]
+
     const benefitsElements = [
-      <Bar dataKey="benefits_yes" name="Yes" fill="#5dbf85" />,
-      <Bar dataKey="benefits_no" name="No" fill="#bf5d96" />,
-      <Bar dataKey="benefits_dontknow" name="Don't know" fill="#54499b" />,
+      <Bar dataKey="benefits_yes" key="benefits_yes" name="Yes" fill="#5dbf85" />,
+      <Bar dataKey="benefits_no" key="benefits_no" name="No" fill="#bf5d96" />,
+      <Bar dataKey="benefits_dontknow" key="benefits_dontknow" name="Don't know" fill="#54499b" />,
+    ]
+
+    const mentalVsPhysicalElements = [
+      <Bar dataKey="mental_vs_physical_yes" key="mental_vs_physical_yes" name="Yes" fill="#499b4a" />,
+      <Bar dataKey="mental_vs_physical_no" key="mental_vs_physical_no" name="No" fill="#9b497f" />,
+      <Bar dataKey="mental_vs_physical_dontknow" key="mental_vs_physical_dontknow" name="Don't know" fill="#52499b" />,
+    ]
+
+    const leaveElements = [
+      <Bar dataKey="leave_very_easy" key="leave_very_easy" name="Very easy" fill="#82ca9d" />,
+      <Bar dataKey="leave_easy" key="leave_easy" name="Somewhat easy" fill="#99d1ff" />,
+      <Bar dataKey="leave_difficult" key="leave_difficult" name="Somewhat difficult" fill="#d18306" />,
+      <Bar dataKey="leave_very_difficult" key="leave_very_difficult" name="Very difficult" fill="#d12406" />,
+      <Bar dataKey="leave_dontknow" key="leave_dontknow" name="Don't know" fill="#ffc658" />,
     ]
 
     if (loading) {
@@ -148,135 +180,19 @@ export default class Details extends React.Component {
       </div>
       <Grid container spacing={3}>
         <Grid item xs={4}>
-          <div style={{ height: 400 }}>
-            <div style={{ marginLeft: 30 }}>
-              <h5>Wellness Program vs Mental Health Consquence</h5>
-            </div>
-          <ResponsiveContainer>
-            <BarChart
-              width={500}
-              height={300}
-              data={wellnessResults}
-              margin={{
-                top: 5, right: 30, left: 20, bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="country" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="wellness_program" name="Companies with wellness program" fill="#8884d8" />
-              <Bar dataKey="mental_health_consequence" name="Companies with mental health consequence" fill="#f46b42" />
-            </BarChart>
-          </ResponsiveContainer>
-          </div>
+          {this.renderBarChart('Wellness Program vs Mental Health Consquence', wellnessResults, wellnessElements)}
         </Grid>
         <Grid item xs={4}>
-          <div style={{ height: 400 }}>
-            <div style={{ marginLeft: 30 }}>
-              <h5>Care options vs Tech Companies</h5>
-            </div>
-          <ResponsiveContainer>
-            <BarChart
-              width={500}
-              height={300}
-              data={interfereResults}
-              margin={{
-                top: 5, right: 30, left: 20, bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="country" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="care_options" name="Have care options.." fill="#bfa35d" />
-              <Bar dataKey="tech_company" name="In tech?" fill="#5d81bf" />
-            </BarChart>
-          </ResponsiveContainer>
-          </div>
+          {this.renderBarChart('Do you know the options for mental health care your employer provides (Tech)', interfereResults, interfereElements)}
         </Grid>
         <Grid item xs={4}>
-          <div style={{ height: 400 }}>
-            <div style={{ marginLeft: 30 }}>
-              <h5>Benefits plan</h5>
-            </div>
-          <ResponsiveContainer>
-            {/* {this.renderBarChart(benefitsResults, benefitsElements)} */}
-            <BarChart
-              width={500}
-              height={300}
-              data={benefitsResults}
-              margin={{
-                top: 5, right: 30, left: 20, bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="country" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-                <Bar dataKey="benefits_yes" name="Yes" fill="#5dbf85" />
-                <Bar dataKey="benefits_no" name="No" fill="#bf5d96" />
-                <Bar dataKey="benefits_dontknow" name="Don't know" fill="#54499b" />
-            </BarChart>
-          </ResponsiveContainer>
-          </div>
+          {this.renderBarChart('Employeer have Mental Health benefits plan?', benefitsResults, benefitsElements)}
         </Grid>
         <Grid item xs={4}>
-          <div style={{ height: 400 }}>
-            <div style={{ marginLeft: 30 }}>
-              <h5>Employer takes mental health as seriously as physical health?</h5>
-            </div>
-          <ResponsiveContainer>
-            <BarChart
-              width={500}
-              height={300}
-              data={healthVSPhysicalResults}
-              margin={{
-                top: 5, right: 30, left: 20, bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="country" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-                <Bar dataKey="mental_vs_physical_yes" name="Yes" fill="#499b4a" />
-                <Bar dataKey="mental_vs_physical_no" name="No" fill="#9b497f" />
-                <Bar dataKey="mental_vs_physical_dontknow" name="Don't know" fill="#52499b" />
-            </BarChart>
-          </ResponsiveContainer>
-          </div>
+          {this.renderBarChart('Employer takes mental health as seriously as physical health?', healthVSPhysicalResults, mentalVsPhysicalElements)}
         </Grid>
         <Grid item xs={4}>
-          <div style={{ height: 400 }}>
-            <div style={{ marginLeft: 30 }}>
-              <h5>Easy is it for you to take medical leave for a mental health condition?</h5>
-            </div>
-          <ResponsiveContainer>
-            <BarChart
-              width={500}
-              height={300}
-              data={leaveResults}
-              margin={{
-                top: 5, right: 30, left: 20, bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="country" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-                <Bar dataKey="leave_very_easy" name="Very easy" fill="#82ca9d" />
-                <Bar dataKey="leave_easy" name="Somewhat easy" fill="#99d1ff" />
-                <Bar dataKey="leave_difficult" name="Somewhat difficult" fill="#d18306" />
-                <Bar dataKey="leave_very_difficult" name="Very difficult" fill="#d12406" />
-                <Bar dataKey="leave_dontknow" name="Don't know" fill="#ffc658" />
-            </BarChart>
-          </ResponsiveContainer>
-          </div>
+          {this.renderBarChart('Is easy for you to take medical leave for a mental health condition?', leaveResults, leaveElements)}
         </Grid>
       </Grid>
     </>
