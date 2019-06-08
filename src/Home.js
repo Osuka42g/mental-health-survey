@@ -14,7 +14,7 @@ export default class Home extends React.Component {
     }
 
     return <>
-      <OverviewChart data={this.props.data} dataModel={this.props.dataModel} />
+      <OverviewChart data={this.props.data} />
       <hr/>
       <Container fixed>
         <OverviewTable data={this.props.data} />

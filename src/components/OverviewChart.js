@@ -4,12 +4,7 @@ import {
   ResponsiveContainer, ComposedChart, Line, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts'
 
-import {
-  defineTreatmentGroup,
-  defineFamilyIllnessGroup,
-  defineAgeGroup,
-  defineGenderGroup
-} from '../controller/dataController'
+import { normalizeOverviewData } from '../controller/dataController'
 import FilterList from './FilterList'
 import FilterSlider from './FilterSlider'
 
@@ -49,35 +44,6 @@ export default class OverviewChart extends React.Component {
     minEntries: 42,
   }
 
-  updateData() {
-    const { data, dataModel } = this.props
-    const { minEntries } = this.state
-
-    const newData = {}
-    data.forEach(e => {
-      const { country, gender, age, family_history, treatment, } = e
-      if (!newData[country]) {
-        newData[country] = { ...dataModel, country, }
-      }
-      const summatory = newData[country]
-
-      summatory.entries += 1
-      summatory[defineGenderGroup(gender)] += 1
-      summatory[defineAgeGroup(age)] += 1
-      summatory[defineFamilyIllnessGroup(family_history)] += 1
-      summatory[defineTreatmentGroup(treatment)] += 1
-    })
-
-    const dataToReturn = []
-    for (const key in newData) {
-      let dataBycountry = newData[key]
-      if (dataBycountry.entries > minEntries)
-        dataToReturn.push({ ...dataBycountry })
-    }
-
-    return dataToReturn
-  }
-
   handleToggle(value) {
     const { filters } = this.state
     filters[value] = !filters[value]
@@ -89,7 +55,9 @@ export default class OverviewChart extends React.Component {
   }
 
   updateDataSourceMapping() {
-    this.setState({ dataChart: this.updateData() })
+    const { data } = this.props
+    const { minEntries } = this.state
+    this.setState({ dataChart: normalizeOverviewData(data, minEntries) })
   }
 
   componentDidMount() {

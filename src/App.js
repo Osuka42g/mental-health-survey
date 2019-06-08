@@ -8,7 +8,6 @@ import Typography from '@material-ui/core/Typography'
 
 import Home from './Home'
 import Details from './Details'
-import OverviewModel from './models/OverviewModel'
 
 import { fetchData, } from './controller/dataController'
 
@@ -61,8 +60,8 @@ export default class defaultRoute extends React.Component {
             </Typography>
           </Toolbar>
         </AppBar>
-        <Route exact path="/" component={() => <Home limit={limit} data={selectedData} dataModel={OverviewModel} loading={loading} />} />
-        <Route path="/details" component={() => <Details limit={limit} data={selectedData} dataModel={OverviewModel} loading={loading} />} />
+        <Route exact path="/" component={() => <Home limit={limit} data={selectedData} loading={loading} />} />
+        <Route path="/details" component={() => <Details limit={limit} data={selectedData} loading={loading} />} />
       </Router>
     )
   }

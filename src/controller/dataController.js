@@ -1,3 +1,4 @@
+import OverviewModel from '../models/OverviewModel'
 import Wellness from '../models/WellnessModel'
 import WorkInterfere from '../models/WorkInterfereModel'
 import Benefits from '../models/BenefitsModel'
@@ -17,6 +18,7 @@ const toBool = str => {
   return str === 'Yes'
 }
 
+
 export const fetchData = async () => {
   try {
     const JSONhealthData = await fetch(serviceEndpoint)
@@ -28,6 +30,34 @@ export const fetchData = async () => {
     console.log('Something broke while fetching data', err)
   }
 }
+
+
+export const normalizeOverviewData = (data, minimalEntries) => {
+  const normalized = {}
+  data.forEach(e => {
+    const { country, gender, age, family_history, treatment, } = e
+    if (!normalized[country]) {
+      normalized[country] = { ...OverviewModel, country, }
+    }
+    const summatory = normalized[country]
+
+    summatory.entries += 1
+    summatory[defineGenderGroup(gender)] += 1
+    summatory[defineAgeGroup(age)] += 1
+    summatory[defineFamilyIllnessGroup(family_history)] += 1
+    summatory[defineTreatmentGroup(treatment)] += 1
+  })
+
+  const dataToReturn = []
+  for (const key in normalized) {
+    let dataBycountry = normalized[key]
+    if (dataBycountry.entries > minimalEntries)
+      dataToReturn.push({ ...dataBycountry })
+  }
+
+  return dataToReturn
+}
+
 
 export const wellnessComparison = data => {
   const byCountry = {}
@@ -82,6 +112,7 @@ export const benefitsComparison = data => {
 }
 
 
+
 export const filterByCountries = (data, countries) => {
   return data.filter(e => countries.includes(e.country))
 }
@@ -89,6 +120,7 @@ export const filterByCountries = (data, countries) => {
 export const filterDataByEmployees = (data, employees) => {
   return data.filter(e => e.no_employees === employees)
 }
+
 
 
 export const defineGenderGroup = gender => {
