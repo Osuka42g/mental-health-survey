@@ -8,8 +8,10 @@ import Typography from '@material-ui/core/Typography'
 
 import Home from './Home'
 import Details from './Details'
+import OverviewModel from './models/OverviewModel'
 
-import { data, dataModel } from './static/data'
+import { data, } from './static/data'
+
 
 export default class defaultRoute extends React.Component {
   state = {
@@ -57,8 +59,8 @@ export default class defaultRoute extends React.Component {
             </Typography>
           </Toolbar>
         </AppBar>
-        <Route exact path="/" component={() => <Home limit={limit} data={selectedData} dataModel={dataModel} loading={loading} />} />
-        <Route path="/details" component={() => <Details limit={limit} data={selectedData} dataModel={dataModel} loading={loading} />} />
+        <Route exact path="/" component={() => <Home limit={limit} data={selectedData} dataModel={OverviewModel} loading={loading} />} />
+        <Route path="/details" component={() => <Details limit={limit} data={selectedData} dataModel={OverviewModel} loading={loading} />} />
       </Router>
     )
   }
