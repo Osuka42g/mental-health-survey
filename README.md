@@ -1,68 +1,89 @@
+# Mental Health Survey
+
+[Code challenge](https://github.com/12traits/coding-challenges/blob/master/fed-challenge.md) for 12traits.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+---
+
+## Problem
+Visualize data about [mental health surveys](https://www.kaggle.com/osmi/mental-health-in-tech-survey/data). We need to get the better insights about this data, and get the highlights for countries with high number of surveys answered.
+
+## Solution
+React app that visualizes the information in different charts.
+- User can select the amount of entries she/he want to display with the Select right to the `Details` button. This will affect all charts/data.
+
+Main sections:
+- Home: visualize important information such
+  - Age: Stacked in one single column. Due to the different ages, I decided to group them by groups of 20 years lenght.
+    - Up to 20 years
+    - Up to 40 years
+    - Up to 60 years
+    - More than 60 years
+  - Gender: Results with `f` or `female` are females, `m` or `male` are males (Not case sensitive). Any other result is `unknow gender` type.
+  - Family history and Treatment columns are considered only cases with `Yes` result.
+  - Filters:
+    - Any column from the Home chart can be hide/show with the left list.
+    - Added slider to show more/less countries in the chart depending on their amount of entries in the survey.
+  - Table: shows all registers taking in consideration for Home and Details section.
+
+- Details:
+  - Filter by size of company.
+  - Selector of 3 countries.
+  - 5 charts displaying relevant info.
+---
+
+## Requeriments
+```
+npm >= 6.9.0
+node >= 11.8.0
+```
+
+## Installation
+```
+git clone https://github.com/Osuka42g/mental-health-survey
+cd mental-health-survey
+npm install
+```
 
 ## Available Scripts
 
 In the project directory, you can run:
 
 ### `npm start`
-
 Runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm run build`
-
 Builds the app for production to the `build` folder.<br>
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+---
+## Dependencies
+- [Material-UI](https://material-ui.com/components/menus/): Widely used among react developers; contains useful components required for the app (such the table, styling, layout)
+- [Recharts](http://recharts.org/): Easy to use and lightweight charts library.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Technical choices
+- Data is fetched on app load, and persisted.
+  - Due to the lack of backend, only one file of 1mb is served. So we just load once.
+  - All calculations for tables are made by controller's frontend in `controller/controlleData.js`
+- Using AWS S3 to serve file.
+  - Yeah.. I totally gave front-end about data manipullation. The right way is to provide a service to provide custom data on demand.
+- Why not using react hooks and new cool features?
+  - I haven't use them too much so I don't feel confident experimenting for this challenge.
+- Why the `Comparisions` methods for accumulate instead of reduce?
+  - I think the methods are cleaner in the intention about what they do. Also, they just run once instead of each time we want a summatory value. Anyways I think it would worth the evaluation about performance / clean code.
+- Why fetch instead of axios?
+  - We are just using fetching once for now. No need to add extra weight on dependencies.
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## If more time / Next steps
+- Unit tests are missing.
+- Continious integration deployment.
+- Some elements are hardcoded.
+- Didn't like how the nav bar is merged with the route.
+- Add endpoint to .env (or some configuration file).
+- Enhance charts (Using a [map chart](https://www.amcharts.com/javascript-maps/) would be neat!).
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+🍻
