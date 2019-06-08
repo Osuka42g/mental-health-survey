@@ -13,6 +13,8 @@ import {
   benefitsComparison,
   workInterfereComparison,
   wellnessComparison,
+  filterDataByEmployees,
+  filterByCountries,
 } from './controller/dataController'
 
 import FilterList from './components/FilterList'
@@ -63,14 +65,6 @@ export default class Details extends React.Component {
     this.setState({ filters })
   }
 
-  filterByCountries(data, countries) {
-    return data.filter(e => countries.includes(e.country))
-  }
-
-  filterDataByEmployees(data, employees) {
-    return data.filter(e => e.no_employees === employees)
-  }
-
   getSelectedCountriesArray = () => {
     const { filters } = this.state
     const selectedCountries = []
@@ -88,8 +82,8 @@ export default class Details extends React.Component {
 
     const selectedCountries = this.getSelectedCountriesArray()
 
-    const dataEmployeesGrouped = this.filterDataByEmployees(data, employeesGroup)
-    const countriesFiltered = this.filterByCountries(dataEmployeesGrouped, selectedCountries)
+    const dataEmployeesGrouped = filterDataByEmployees(data, employeesGroup)
+    const countriesFiltered = filterByCountries(dataEmployeesGrouped, selectedCountries)
 
     return countriesFiltered
   }

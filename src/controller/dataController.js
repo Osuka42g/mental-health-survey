@@ -13,6 +13,10 @@ const objToArray = obj => {
   return converted
 }
 
+const toBool = str => {
+  return str === 'Yes'
+}
+
 export const fetchData = async () => {
   try {
     const JSONhealthData = await fetch(serviceEndpoint)
@@ -75,4 +79,52 @@ export const benefitsComparison = data => {
   })
 
   return objToArray(byCountry)
+}
+
+
+export const filterByCountries = (data, countries) => {
+  return data.filter(e => countries.includes(e.country))
+}
+
+export const filterDataByEmployees = (data, employees) => {
+  return data.filter(e => e.no_employees === employees)
+}
+
+
+export const defineGenderGroup = gender => {
+  switch (gender.toLowerCase()) {
+    case 'm':
+    case 'male':
+      return 'genderMale'
+    case 'f':
+    case 'female':
+      return 'genderFemale'
+    default:
+      return 'genderUnknow'
+  }
+}
+
+export const defineAgeGroup = age => {
+  if (age > 60) {
+    return 'ageMore60'
+  }
+  if (age > 40) {
+    return 'ageUp60'
+  }
+  if (age > 20) {
+    return 'ageUp40'
+  }
+  return 'ageUp20'
+}
+
+export const defineFamilyIllnessGroup = family_history => {
+  return toBool(family_history)
+    ? 'familyMentalIllness'
+    : 'dispose'
+}
+
+export const defineTreatmentGroup = treatment => {
+  return toBool(treatment)
+    ? 'treatment'
+    : 'dispose'
 }

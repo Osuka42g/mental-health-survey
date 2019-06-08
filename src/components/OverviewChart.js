@@ -4,51 +4,37 @@ import {
   ResponsiveContainer, ComposedChart, Line, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts'
 
+import {
+  defineTreatmentGroup,
+  defineFamilyIllnessGroup,
+  defineAgeGroup,
+  defineGenderGroup
+} from '../controller/dataController'
 import FilterList from './FilterList'
 import FilterSlider from './FilterSlider'
 
-
-const defineGenderGroup = gender => {
-  switch (gender.toLowerCase()) {
-    case 'm':
-    case 'male':
-      return 'genderMale'
-    case 'f':
-    case 'female':
-      return 'genderFemale'
-    default:
-      return 'genderUnknow'
-  }
-}
-
-const defineAgeGroup = age => {
-  if (age > 60) {
-    return 'ageMore60'
-  }
-  if (age > 40) {
-    return 'ageUp60'
-  }
-  if (age > 20) {
-    return 'ageUp40'
-  }
-  return 'ageUp20'
-}
-
-const toBool = str => {
-  return str === 'Yes'
-}
-
-const defineFamilyIllnessGroup = family_history => {
-  return toBool(family_history)
-    ? 'familyMentalIllness'
-    : 'dispose'
-}
-
-const defineTreatmentGroup = treatment => {
-  return toBool(treatment)
-    ? 'treatment'
-    : 'dispose'
-}
+const filterOptions = [
+  {
+    key: 'entries',
+    label: 'Entries count',
+  },
+  {
+    key: 'age',
+    label: 'Age',
+  },
+  {
+    key: 'gender',
+    label: 'Gender',
+  },
+  {
+    key: 'familyHistory',
+    label: 'Family history of mental illnesses',
+  },
+  {
+    key: 'treatment',
+    label: 'Treatment sought for a mental health condition',
+  },
+]
 
 export default class OverviewChart extends React.Component {
   state = {
@@ -63,8 +49,7 @@ export default class OverviewChart extends React.Component {
     minEntries: 42,
   }
 
-  fetchData() {
-    // this is from backend of course
+  updateData() {
     const { data, dataModel } = this.props
     const { minEntries } = this.state
 
@@ -104,7 +89,7 @@ export default class OverviewChart extends React.Component {
   }
 
   updateDataSourceMapping() {
-    this.setState({ dataChart: this.fetchData() })
+    this.setState({ dataChart: this.updateData() })
   }
 
   componentDidMount() {
@@ -113,29 +98,6 @@ export default class OverviewChart extends React.Component {
 
   render() {
     const { dataChart, filters, minEntries, } = this.state
-
-    const filterOptions = [
-      {
-        key: 'entries',
-        label: 'Entries count',
-      },
-      {
-        key: 'age',
-        label: 'Age',
-      },
-      {
-        key: 'gender',
-        label: 'Gender',
-      },
-      {
-        key: 'familyHistory',
-        label: 'Family history of mental illnesses',
-      },
-      {
-        key: 'treatment',
-        label: 'Treatment sought for a mental health condition',
-      },
-    ]
 
     return (
       <Grid container spacing={3}>
@@ -169,16 +131,16 @@ export default class OverviewChart extends React.Component {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                { filters.entries && <Area type="monotone" name="Entries count" dataKey="entries" fill="#8884d8" stroke="#8884d8" /> }
-                { filters.age && <Bar barSize={100} stackId="age" name="Up to 20 years" dataKey="ageUp20" fill="#669900" /> }
-                { filters.age && <Bar barSize={100} stackId="age" name="Up to 40 years" dataKey="ageUp40" fill="#009933" /> }
-                { filters.age && <Bar barSize={100} stackId="age" name="Up to 60 years" dataKey="ageUp60" fill="#006600" /> }
-                { filters.age && <Bar barSize={100} stackId="age" name="More than 60 years" dataKey="ageMore60" fill="#0000cc" /> }
-                { filters.familyHistory && <Bar barSize={75} name="Family Mental Illness" dataKey="familyMentalIllness" fill="#669999" /> }
-                { filters.treatment && <Bar barSize={75} name="In treatment" dataKey="treatment" fill="#ff9900" /> }
-                { filters.gender && <Line type="monotone" name="Males" dataKey="genderMale" stroke="#3366ff" /> }
-                { filters.gender && <Line type="monotone" name="Females" dataKey="genderFemale" stroke="#ff6699" /> }
-                { filters.gender && <Line type="monotone" name="Other gender" dataKey="genderUnknow" stroke="#9999ff" /> }
+                {filters.entries && <Area type="monotone" name="Entries count" dataKey="entries" fill="#8884d8" stroke="#8884d8" />}
+                {filters.age && <Bar barSize={100} stackId="age" name="Up to 20 years" dataKey="ageUp20" fill="#669900" />}
+                {filters.age && <Bar barSize={100} stackId="age" name="Up to 40 years" dataKey="ageUp40" fill="#009933" />}
+                {filters.age && <Bar barSize={100} stackId="age" name="Up to 60 years" dataKey="ageUp60" fill="#006600" />}
+                {filters.age && <Bar barSize={100} stackId="age" name="More than 60 years" dataKey="ageMore60" fill="#0000cc" />}
+                {filters.familyHistory && <Bar barSize={75} name="Family Mental Illness" dataKey="familyMentalIllness" fill="#669999" />}
+                {filters.treatment && <Bar barSize={75} name="In treatment" dataKey="treatment" fill="#ff9900" />}
+                {filters.gender && <Line type="monotone" name="Males" dataKey="genderMale" stroke="#3366ff" />}
+                {filters.gender && <Line type="monotone" name="Females" dataKey="genderFemale" stroke="#ff6699" />}
+                {filters.gender && <Line type="monotone" name="Other gender" dataKey="genderUnknow" stroke="#9999ff" />}
               </ComposedChart>
             </ResponsiveContainer>
           </div>
