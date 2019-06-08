@@ -2,6 +2,8 @@ import OverviewModel from '../models/OverviewModel'
 import Wellness from '../models/WellnessModel'
 import WorkInterfere from '../models/WorkInterfereModel'
 import Benefits from '../models/BenefitsModel'
+import MentalVSPhysical from '../models/MentalVSPhysicalModel'
+import Leave from '../models/LeaveModel'
 
 const serviceEndpoint = 'https://cartelito.s3.us-east-2.amazonaws.com/health_data.json'
 
@@ -106,6 +108,43 @@ export const benefitsComparison = data => {
     summatory.benefits_yes += e.benefits === 'Yes' ? 1 : 0
     summatory.benefits_no += e.benefits === 'No' ? 1 : 0
     summatory.benefits_dontknow += e.benefits === 'Don\'t Know' ? 1 : 0
+  })
+
+  return objToArray(byCountry)
+}
+
+export const healthVSPhysicalComparison = data => {
+  const byCountry = {}
+
+  data.forEach(e => {
+    if (!byCountry[e.country]) {
+      byCountry[e.country] = { ...MentalVSPhysical }
+    }
+
+    const summatory = byCountry[e.country]
+    summatory.country = e.country
+    summatory.mental_vs_physical_yes += e.mental_vs_physical === 'Yes' ? 1 : 0
+    summatory.mental_vs_physical_no += e.mental_vs_physical === 'No' ? 1 : 0
+    summatory.mental_vs_physical_dontknow += e.mental_vs_physical === 'Don\'t Know' ? 1 : 0
+  })
+  return objToArray(byCountry)
+}
+
+export const leaveComparison = data => {
+  const byCountry = {}
+
+  data.forEach(e => {
+    if (!byCountry[e.country]) {
+      byCountry[e.country] = { ...Leave }
+    }
+
+    const summatory = byCountry[e.country]
+    summatory.country = e.country
+    summatory.leave_easy += e.leave === 'Somewhat easy' ? 1 : 0
+    summatory.leave_very_easy += e.leave === 'Very easy' ? 1 : 0
+    summatory.leave_difficult += e.leave === 'Somewhat difficult' ? 1 : 0
+    summatory.leave_very_difficult += e.leave === 'Very difficult' ? 1 : 0
+    summatory.leave_dontknow += e.leave === 'Don\'t know' ? 1 : 0
   })
 
   return objToArray(byCountry)

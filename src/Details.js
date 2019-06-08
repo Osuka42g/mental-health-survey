@@ -6,13 +6,15 @@ import Select from '@material-ui/core/Select'
 import LinearProgress from '@material-ui/core/LinearProgress'
 
 import {
-  ResponsiveContainer, BarChart, ComposedChart, Line, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts'
 
 import {
   benefitsComparison,
   workInterfereComparison,
   wellnessComparison,
+  healthVSPhysicalComparison,
+  leaveComparison,
   filterDataByEmployees,
   filterByCountries,
 } from './controller/dataController'
@@ -88,6 +90,25 @@ export default class Details extends React.Component {
     return countriesFiltered
   }
 
+  renderBarChart = (datasource, elements) => {
+    return (
+      <BarChart
+        width={500}
+        height={300}
+        data={datasource}
+        margin={{
+          top: 5, right: 30, left: 20, bottom: 5,
+        }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="country" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        { elements }
+      </BarChart>)
+    }
+
   render() {
     const { loading, } = this.props
     const { employeesGroup, } = this.state
@@ -96,6 +117,14 @@ export default class Details extends React.Component {
     const wellnessResults = wellnessComparison(filteredData)
     const interfereResults = workInterfereComparison(filteredData)
     const benefitsResults = benefitsComparison(filteredData)
+    const healthVSPhysicalResults = healthVSPhysicalComparison(filteredData)
+    const leaveResults = leaveComparison(filteredData)
+
+    const benefitsElements = [
+      <Bar dataKey="benefits_yes" name="Yes" fill="#5dbf85" />,
+      <Bar dataKey="benefits_no" name="No" fill="#bf5d96" />,
+      <Bar dataKey="benefits_dontknow" name="Don't know" fill="#54499b" />,
+    ]
 
     if (loading) {
       return <LinearProgress />
@@ -174,6 +203,7 @@ export default class Details extends React.Component {
               <h5>Benefits plan</h5>
             </div>
           <ResponsiveContainer>
+            {/* {this.renderBarChart(benefitsResults, benefitsElements)} */}
             <BarChart
               width={500}
               height={300}
@@ -190,6 +220,60 @@ export default class Details extends React.Component {
                 <Bar dataKey="benefits_yes" name="Yes" fill="#5dbf85" />
                 <Bar dataKey="benefits_no" name="No" fill="#bf5d96" />
                 <Bar dataKey="benefits_dontknow" name="Don't know" fill="#54499b" />
+            </BarChart>
+          </ResponsiveContainer>
+          </div>
+        </Grid>
+        <Grid item xs={4}>
+          <div style={{ height: 400 }}>
+            <div style={{ marginLeft: 30 }}>
+              <h5>Employer takes mental health as seriously as physical health?</h5>
+            </div>
+          <ResponsiveContainer>
+            <BarChart
+              width={500}
+              height={300}
+              data={healthVSPhysicalResults}
+              margin={{
+                top: 5, right: 30, left: 20, bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="country" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+                <Bar dataKey="mental_vs_physical_yes" name="Yes" fill="#499b4a" />
+                <Bar dataKey="mental_vs_physical_no" name="No" fill="#9b497f" />
+                <Bar dataKey="mental_vs_physical_dontknow" name="Don't know" fill="#52499b" />
+            </BarChart>
+          </ResponsiveContainer>
+          </div>
+        </Grid>
+        <Grid item xs={4}>
+          <div style={{ height: 400 }}>
+            <div style={{ marginLeft: 30 }}>
+              <h5>Easy is it for you to take medical leave for a mental health condition?</h5>
+            </div>
+          <ResponsiveContainer>
+            <BarChart
+              width={500}
+              height={300}
+              data={leaveResults}
+              margin={{
+                top: 5, right: 30, left: 20, bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="country" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+                <Bar dataKey="leave_very_easy" name="Very easy" fill="#82ca9d" />
+                <Bar dataKey="leave_easy" name="Somewhat easy" fill="#99d1ff" />
+                <Bar dataKey="leave_difficult" name="Somewhat difficult" fill="#d18306" />
+                <Bar dataKey="leave_very_difficult" name="Very difficult" fill="#d12406" />
+                <Bar dataKey="leave_dontknow" name="Don't know" fill="#ffc658" />
             </BarChart>
           </ResponsiveContainer>
           </div>

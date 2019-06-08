@@ -7,17 +7,17 @@ import OverviewTable from './components/OverviewTable'
 
 export default class Home extends React.Component {
   render() {
-    const { loading } = this.props
+    const { loading, data, } = this.props
 
     if (loading) {
       return <LinearProgress />
     }
 
     return <>
-      <OverviewChart data={this.props.data} />
+      <OverviewChart data={data} />
       <hr/>
       <Container fixed>
-        <OverviewTable data={this.props.data} />
+        <OverviewTable data={data} />
       </Container>
     </>
   }
