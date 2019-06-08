@@ -10,22 +10,26 @@ import Home from './Home'
 import Details from './Details'
 import OverviewModel from './models/OverviewModel'
 
-import { data, } from './static/data'
-
+import { fetchData, } from './controller/dataController'
 
 export default class defaultRoute extends React.Component {
   state = {
+    data: [],
     limit: 'All',
     loading: true,
   }
 
-  componentDidMount() {
-    setTimeout(() => {
-      this.setState({ loading: false })
-    }, 1000)
+  async componentDidMount() {
+    this.fetchRemoteData()
+  }
+
+  async fetchRemoteData() {
+    const fetched = await fetchData()
+    this.setState({ data: fetched, loading: false, })
   }
 
   sliceData(limit) {
+    const { data } = this.state
     return limit === 'All'
       ? data
       : data.slice(Math.max(0, limit))
@@ -33,9 +37,7 @@ export default class defaultRoute extends React.Component {
 
   render() {
     const { limit, loading, } = this.state
-
     const limitPossibles = [ 100, 500, 'All', ]
-
     const selectedData = this.sliceData(limit)
 
     return (

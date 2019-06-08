@@ -2,6 +2,8 @@ import Wellness from '../models/WellnessModel'
 import WorkInterfere from '../models/WorkInterfereModel'
 import Benefits from '../models/BenefitsModel'
 
+const serviceEndpoint = 'https://cartelito.s3.us-east-2.amazonaws.com/health_data.json'
+
 const objToArray = obj => {
   const converted = []
   for (const key in obj) {
@@ -9,6 +11,18 @@ const objToArray = obj => {
     converted.push({ ...singleObj })
   }
   return converted
+}
+
+export const fetchData = async () => {
+  try {
+    const JSONhealthData = await fetch(serviceEndpoint)
+    const healthData = await JSONhealthData.json()
+
+    return healthData
+  } catch(err) {
+    // Handle this
+    console.log('Something broke while fetching data', err)
+  }
 }
 
 export const wellnessComparison = data => {
