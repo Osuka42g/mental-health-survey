@@ -1,20 +1,21 @@
 import React from 'react'
 
-import Container from '@material-ui/core/Container'
 import MenuItem from '@material-ui/core/MenuItem'
 import Grid from '@material-ui/core/Grid'
 import Select from '@material-ui/core/Select'
+import LinearProgress from '@material-ui/core/LinearProgress'
+
 import {
   ResponsiveContainer, BarChart, ComposedChart, Line, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts'
 
-import LinearProgress from '@material-ui/core/LinearProgress'
-
-import _ from 'lodash'
+import {
+  benefitsComparison,
+  workInterfereComparison,
+  wellnessComparison,
+} from './controller/dataController'
 
 import FilterList from './components/FilterList'
-
-import WellnessModel from './models/WellnessModel'
 
 const filterOptions = [
   {
@@ -49,11 +50,6 @@ const limitPossibleEmployees = [
 export default class Details extends React.Component {
   state = {
     employeesGroup: limitPossibleEmployees[0],
-    dataByCountry: {
-      Canada: [],
-      UK: [],
-      USA: [],
-    },
     filters: {
       canada: true,
       uk: true,
@@ -98,37 +94,14 @@ export default class Details extends React.Component {
     return countriesFiltered
   }
 
-  wellnessComparison(data) {
-    const byCountry = {}
-
-    data.forEach(e => {
-      if (!byCountry[e.country]) {
-        byCountry[e.country] = { ...WellnessModel }
-      }
-
-      const summatory = byCountry[e.country]
-      summatory.country = e.country
-      summatory.wellness_program += e.wellness_program === 'Yes' ? 1 : 0
-      summatory.mental_health_consequence += e.mental_health_consequence === 'Yes' ? 1 : 0
-
-    })
-
-    const dataToReturn = []
-    for (const key in byCountry) {
-      let dataBycountry = byCountry[key]
-      dataToReturn.push({ ...dataBycountry })
-
-    }
-
-    return dataToReturn
-  }
-
   render() {
     const { loading, } = this.props
     const { employeesGroup, } = this.state
 
     const filteredData = this.getDataFiltered()
-    const wellnessComparison = this.wellnessComparison(filteredData)
+    const wellnessResults = wellnessComparison(filteredData)
+    const interfereResults = workInterfereComparison(filteredData)
+    const benefitsResults = benefitsComparison(filteredData)
 
     if (loading) {
       return <LinearProgress />
@@ -160,7 +133,7 @@ export default class Details extends React.Component {
             <BarChart
               width={500}
               height={300}
-              data={wellnessComparison}
+              data={wellnessResults}
               margin={{
                 top: 5, right: 30, left: 20, bottom: 5,
               }}
@@ -172,6 +145,57 @@ export default class Details extends React.Component {
               <Legend />
               <Bar dataKey="wellness_program" name="Companies with wellness program" fill="#8884d8" />
               <Bar dataKey="mental_health_consequence" name="Companies with mental health consequence" fill="#f46b42" />
+            </BarChart>
+          </ResponsiveContainer>
+          </div>
+        </Grid>
+        <Grid item xs={4}>
+          <div style={{ height: 400 }}>
+            <div style={{ marginLeft: 30 }}>
+              <h5>Care options vs Tech Companies</h5>
+            </div>
+          <ResponsiveContainer>
+            <BarChart
+              width={500}
+              height={300}
+              data={interfereResults}
+              margin={{
+                top: 5, right: 30, left: 20, bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="country" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="care_options" name="Have care options.." fill="#bfa35d" />
+              <Bar dataKey="tech_company" name="In tech?" fill="#5d81bf" />
+            </BarChart>
+          </ResponsiveContainer>
+          </div>
+        </Grid>
+        <Grid item xs={4}>
+          <div style={{ height: 400 }}>
+            <div style={{ marginLeft: 30 }}>
+              <h5>Benefits plan</h5>
+            </div>
+          <ResponsiveContainer>
+            <BarChart
+              width={500}
+              height={300}
+              data={benefitsResults}
+              margin={{
+                top: 5, right: 30, left: 20, bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="country" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+                <Bar dataKey="benefits_yes" name="Yes" fill="#5dbf85" />
+                <Bar dataKey="benefits_no" name="No" fill="#bf5d96" />
+                <Bar dataKey="benefits_dontknow" name="Don't know" fill="#54499b" />
             </BarChart>
           </ResponsiveContainer>
           </div>

@@ -4,8 +4,6 @@ import {
   ResponsiveContainer, ComposedChart, Line, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts'
 
-import { keyBy } from 'react-lodash'
-
 import FilterList from './FilterList'
 import FilterSlider from './FilterSlider'
 
