@@ -16,9 +16,7 @@ const objToArray = obj => {
   return converted
 }
 
-const toBool = str => {
-  return str === 'Yes'
-}
+const toBool = str => str === 'Yes'
 
 
 export const fetchData = async () => {
@@ -29,7 +27,7 @@ export const fetchData = async () => {
     return healthData
   } catch(err) {
     // Handle this
-    console.log('Something broke while fetching data', err)
+    console.log('Something broke while fetching data 🧀', err)
   }
 }
 

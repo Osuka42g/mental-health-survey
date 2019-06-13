@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useCallback, } from 'react'
 
 import MenuItem from '@material-ui/core/MenuItem'
 import Grid from '@material-ui/core/Grid'
@@ -51,24 +51,22 @@ const limitPossibleEmployees = [
   'More than 1000',
 ]
 
-export default class Details extends React.Component {
-  state = {
-    employeesGroup: limitPossibleEmployees[0],
-    filters: {
-      canada: true,
-      uk: true,
-      usa: true,
-    }
+export default function Details(props) {
+  const { loading, data, } = props
+  const [employeesGroup, setEmployeesGroup] = useState(limitPossibleEmployees[0])
+  const [filters, setFilters] = useState({
+    canada: true,
+    uk: true,
+    usa: true,
+  })
+
+  const handleToggle = value => {
+    const filtersChange = { ...filters }
+    filtersChange[value] = !filtersChange[value]
+    setFilters(filtersChange)
   }
 
-  handleToggle(value) {
-    const { filters } = this.state
-    filters[value] = !filters[value]
-    this.setState({ filters })
-  }
-
-  getSelectedCountriesArray = () => {
-    const { filters } = this.state
+  const getSelectedCountriesArray = useCallback(() => {
     const selectedCountries = []
     for (const key in filters) {
       if (filters[key]) {
@@ -76,21 +74,18 @@ export default class Details extends React.Component {
       }
     }
     return selectedCountries
-  }
+  }, [filters])
 
-  getDataFiltered() {
-    const { data, } = this.props
-    const { employeesGroup, } = this.state
-
-    const selectedCountries = this.getSelectedCountriesArray()
+  const getDataFiltered = useCallback(() => {
+    const selectedCountries = getSelectedCountriesArray()
 
     const dataEmployeesGrouped = filterDataByEmployees(data, employeesGroup)
     const countriesFiltered = filterByCountries(dataEmployeesGrouped, selectedCountries)
 
     return countriesFiltered
-  }
+  }, [data, employeesGroup, getSelectedCountriesArray])
 
-  renderBarChart = (title, datasource, elements) => {
+  const renderBarChart = (title, datasource, elements) => {
     return (
       <div style={{ height: 400 }}>
         <div style={{ marginLeft: 30 }}>
@@ -117,11 +112,7 @@ export default class Details extends React.Component {
     )
   }
 
-  render() {
-    const { loading, } = this.props
-    const { employeesGroup, } = this.state
-
-    const filteredData = this.getDataFiltered()
+    const filteredData = getDataFiltered()
     const wellnessResults = wellnessComparison(filteredData)
     const interfereResults = workInterfereComparison(filteredData)
     const benefitsResults = benefitsComparison(filteredData)
@@ -165,36 +156,35 @@ export default class Details extends React.Component {
     return <>
       <FilterList
         options={filterOptions}
-        statuses={this.state.filters}
-        handleToggle={(key) => this.handleToggle(key)}
+        statuses={filters}
+        handleToggle={(key) => handleToggle(key)}
       />
       <div className={'company-size'} style={{ padding: 10 }}>
         <label>Company size:</label>
         <Select
           value={employeesGroup}
           autoWidth={true}
-          onChange={e => this.setState({ employeesGroup: e.target.value })}
+          onChange={e => setEmployeesGroup(e.target.value)}
         >
           {limitPossibleEmployees.map(e => <MenuItem key={e} value={e}>{e}</MenuItem>)}
         </Select>
       </div>
       <Grid container spacing={3}>
         <Grid item xs={4}>
-          {this.renderBarChart('Wellness Program vs Mental Health Consquence', wellnessResults, wellnessElements)}
+          {renderBarChart('Wellness Program vs Mental Health Consquence', wellnessResults, wellnessElements)}
         </Grid>
         <Grid item xs={4}>
-          {this.renderBarChart('Do you know the options for mental health care your employer provides (Tech)', interfereResults, interfereElements)}
+          {renderBarChart('Do you know the options for mental health care your employer provides (Tech)', interfereResults, interfereElements)}
         </Grid>
         <Grid item xs={4}>
-          {this.renderBarChart('Employeer have Mental Health benefits plan?', benefitsResults, benefitsElements)}
+          {renderBarChart('Employeer have Mental Health benefits plan?', benefitsResults, benefitsElements)}
         </Grid>
         <Grid item xs={4}>
-          {this.renderBarChart('Employer takes mental health as seriously as physical health?', healthVSPhysicalResults, mentalVsPhysicalElements)}
+          {renderBarChart('Employer takes mental health as seriously as physical health?', healthVSPhysicalResults, mentalVsPhysicalElements)}
         </Grid>
         <Grid item xs={4}>
-          {this.renderBarChart('Is easy for you to take medical leave for a mental health condition?', leaveResults, leaveElements)}
+          {renderBarChart('Is easy for you to take medical leave for a mental health condition?', leaveResults, leaveElements)}
         </Grid>
       </Grid>
     </>
-  }
 }

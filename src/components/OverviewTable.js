@@ -5,10 +5,9 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 
-export default class OverviewTable extends React.Component {
-  render() {
-    const { data } = this.props
-    const rows = data
+export default function OverviewTable(props) {
+  const { data } = props
+  const rows = data
 
     return (
       <Table>
@@ -38,5 +37,4 @@ export default class OverviewTable extends React.Component {
         </TableBody>
       </Table>
     )
-  }
 }

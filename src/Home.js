@@ -5,9 +5,8 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import OverviewChart from './components/OverviewChart'
 import OverviewTable from './components/OverviewTable'
 
-export default class Home extends React.Component {
-  render() {
-    const { loading, data, } = this.props
+export default function Home(props) {
+    const { loading, data, } = props
 
     if (loading) {
       return <LinearProgress />
@@ -20,5 +19,4 @@ export default class Home extends React.Component {
         <OverviewTable data={data} />
       </Container>
     </>
-  }
 }

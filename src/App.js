@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect, useCallback, } from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -11,33 +11,34 @@ import Details from './Details'
 
 import { fetchData, } from './controller/dataController'
 
-export default class defaultRoute extends React.Component {
-  state = {
-    data: [],
-    limit: 'All',
-    loading: true,
-  }
+const limitPossibles = [100, 500, 'All',]
 
-  async componentDidMount() {
-    this.fetchRemoteData()
-  }
+export default function DefaultRoute(props) {
+  const [data, setData] = useState([])
+  const [limit, setLimit] = useState('All')
+  const [loading, setLoading] = useState(true)
+  const [selectedData, setSelectedData] = useState([])
 
-  async fetchRemoteData() {
+  const fetchRemoteData = async () => {
     const fetched = await fetchData()
-    this.setState({ data: fetched, loading: false, })
+    setData(fetched)
+    setLoading(false)
   }
 
-  sliceData(limit) {
-    const { data } = this.state
-    return limit === 'All'
+  const sliceData = useCallback(() =>
+    limit === 'All'
       ? data
       : data.slice(Math.max(0, limit))
-  }
+  , [limit, data])
 
-  render() {
-    const { limit, loading, } = this.state
-    const limitPossibles = [ 100, 500, 'All', ]
-    const selectedData = this.sliceData(limit)
+  useEffect(() => {
+    const fd = async () => await fetchRemoteData()
+    fd()
+  }, [])
+
+  useEffect(() => {
+    setSelectedData(sliceData())
+  }, [limit, sliceData])
 
     return (
       <Router>
@@ -53,7 +54,7 @@ export default class defaultRoute extends React.Component {
               <Select
                 value={limit}
                 autoWidth={true}
-                onChange={e => this.setState({ limit: e.target.value })}
+                onChange={e => setLimit(e.target.value)}
               >
               {limitPossibles.map(e => <MenuItem key={e} value={e}>{e}</MenuItem> )}
               </Select>
@@ -64,7 +65,6 @@ export default class defaultRoute extends React.Component {
         <Route path="/details" component={() => <Details limit={limit} data={selectedData} loading={loading} />} />
       </Router>
     )
-  }
 }
 
 const itemStyle = {

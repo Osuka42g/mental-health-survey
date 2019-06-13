@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Grid from '@material-ui/core/Grid'
 import {
   ResponsiveContainer, ComposedChart, Line, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
@@ -31,41 +31,36 @@ const filterOptions = [
   },
 ]
 
-export default class OverviewChart extends React.Component {
-  state = {
-    dataChart: [],
-    filters: {
-      entries: true,
-      age: true,
-      gender: true,
-      treatment: true,
-      familyHistory: true,
-    },
-    minEntries: 42,
+const configurationFilters = {
+  entries: true,
+  age: true,
+  gender: true,
+  treatment: true,
+  familyHistory: true,
+}
+
+export default function OverviewChart(props) {
+  const [dataChart, setDataChart] = useState([])
+  const [filters, setFilters] = useState(configurationFilters)
+  const [minEntries, setMinEntries] = useState(42)
+
+  const handleToggle = value => {
+    const toggleFilters = { ...filters }
+    toggleFilters[value] = !toggleFilters[value]
+    setFilters(toggleFilters)
   }
 
-  handleToggle(value) {
-    const { filters } = this.state
-    filters[value] = !filters[value]
-    this.setState({ filters })
+  const updateMinEnties = minEntries => {
+    setMinEntries(minEntries)
+    updateDataSourceMapping()
   }
 
-  updateMinEnties(minEntries) {
-    this.setState({ minEntries }, () => this.updateDataSourceMapping())
+  const updateDataSourceMapping = () =>{
+    const { data } = props
+    setDataChart(normalizeOverviewData(data, minEntries))
   }
 
-  updateDataSourceMapping() {
-    const { data } = this.props
-    const { minEntries } = this.state
-    this.setState({ dataChart: normalizeOverviewData(data, minEntries) })
-  }
-
-  componentDidMount() {
-    this.updateDataSourceMapping()
-  }
-
-  render() {
-    const { dataChart, filters, minEntries, } = this.state
+  useEffect(updateDataSourceMapping, [])
 
     return (
       <Grid container spacing={3}>
@@ -75,12 +70,12 @@ export default class OverviewChart extends React.Component {
           </div>
           <FilterList
             options={filterOptions}
-            statuses={this.state.filters}
-            handleToggle={(key) => this.handleToggle(key)}
+            statuses={filters}
+            handleToggle={(key) => handleToggle(key)}
           />
           <FilterSlider
             value={minEntries}
-            onUpdate={value => this.updateMinEnties(value)}
+            onUpdate={value => updateMinEnties(value)}
           />
         </Grid>
         <Grid item xs={9}>
@@ -115,5 +110,4 @@ export default class OverviewChart extends React.Component {
         </Grid>
       </Grid>
     )
-  }
 }
