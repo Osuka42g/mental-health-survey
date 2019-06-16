@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/mental-health-survey/static/css/main.34de6062.chunk.css",
+    "main.js": "/mental-health-survey/static/js/main.0b89e467.chunk.js",
+    "main.js.map": "/mental-health-survey/static/js/main.0b89e467.chunk.js.map",
+    "runtime~main.js": "/mental-health-survey/static/js/runtime~main.2750d58b.js",
+    "runtime~main.js.map": "/mental-health-survey/static/js/runtime~main.2750d58b.js.map",
+    "static/js/2.e8910e76.chunk.js": "/mental-health-survey/static/js/2.e8910e76.chunk.js",
+    "static/js/2.e8910e76.chunk.js.map": "/mental-health-survey/static/js/2.e8910e76.chunk.js.map",
+    "index.html": "/mental-health-survey/index.html",
+    "precache-manifest.196b3fe472f041ae850ed2fa070cb145.js": "/mental-health-survey/precache-manifest.196b3fe472f041ae850ed2fa070cb145.js",
+    "service-worker.js": "/mental-health-survey/service-worker.js",
+    "static/css/main.34de6062.chunk.css.map": "/mental-health-survey/static/css/main.34de6062.chunk.css.map"
+  }
+}
